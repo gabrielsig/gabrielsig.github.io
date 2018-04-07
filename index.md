@@ -353,7 +353,9 @@ def count_holes(image):
 
 #### 3.3. Resultados
 
+Abaixo podemos ver as imagens geradas pelo algoritmo nas diversas etapas da execução:
 
+![labeling1](gabrielsig.github.io/images/labeling/labeling1.png)
 
 
 
