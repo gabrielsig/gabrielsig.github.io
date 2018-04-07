@@ -18,7 +18,7 @@ O código completo dessa aplicação pode ser obtido [agui](github.com/gabrielsi
 
 Inicialmente carregamos uma imagem qualquer e extraímos suas dimensões. Então criamos duas listas de 2 elementos que servirão para armazenar as coordenadas dos pontos, tais como duas flags que serão usadas para checarmos se os pontos foram definidos ou não. Por último criamos a janela onde o resultado será exibido, e definimos a função que será chamada quando o mouse for clicado (mais sobre isso a frente):
 
-```Python
+```python
 # read image
 img = cv2.imread('media/hermes2.jpeg')
 
@@ -40,7 +40,7 @@ cv2.setMouseCallback('Regions', on_mouse_select)
 
 A função `on_mouse_select` é chamada sempre que um evento relacionado ao mouse acontecer. Ela recebe como parâmetros as coordenadas do mouse e o evento que gerou o acionamento:
 
-```Python
+```python
 def on_mouse_select(event, x, y, flags, param):
     global p1, p2, p1_set, p2_set, img_width, img_height
 
@@ -63,7 +63,7 @@ Por último entramos em um loop onde é verificado  se o usuário já forneceu o
 
 Posteriormente esperamos que o usuário pressione alguma das duas teclas: caso pressione a barra de espaço, a imagem é recarregada, caso pressione esc o programa é finalizado:
 
-```Python
+```python
 while True:
     if p1_set and p2_set:
         # Apply the negative in the area composed by the 2 points provided by the user
@@ -94,10 +94,10 @@ cv2.destroyAllWindows()
 
 Na primeira imagem podemos ver o resultado após uma região qualquer ser selecionada pelo usuário:
 
-![regions1](https://github.com/gabrielsig/gabrielsig.github.io/images/regions/regions1.png)
+![regions1](images/regions/regions1.png)
 
 Já na segunda imagem podemos ver o que acontece quando o usuário seleciona duas regiões que possuem uma interseção. Nessa região o valor dos pixels volta ao original, pois o negativo do negativo é a própria imagem:
 
-![regions1](https://github.com/gabrielsig/gabrielsig.github.io/images/regions/regions2.png)
+![regions1](images/regions/regions2.png)
 
-## 2. Troca de regiões da imagem 
+## 2. Troca de regiões da imagem
