@@ -174,7 +174,9 @@ cv2.destroyAllWindows()
 
 Abaixo podemos ver exemplos da imagem embaralhada com diferentes quantidades de linhas e colunas:
 
-
+![shuffle1](gabrielsig.github.io/images/shuffle/shuffle1.png)
+![shuffle2](gabrielsig.github.io/images/shuffle/shuffle2.png)
+![shuffle3](gabrielsig.github.io/images/shuffle/shuffle3.png)
 
 
 
