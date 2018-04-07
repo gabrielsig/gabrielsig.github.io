@@ -175,23 +175,195 @@ cv2.destroyAllWindows()
 Abaixo podemos ver exemplos da imagem embaralhada com diferentes quantidades de linhas e colunas:
 
 ![shuffle1](gabrielsig.github.io/images/shuffle/shuffle1.png)
+
 ![shuffle2](gabrielsig.github.io/images/shuffle/shuffle2.png)
+
 ![shuffle3](gabrielsig.github.io/images/shuffle/shuffle3.png)
-
-
-
-
-
-
-
-
 
 ## 3. Contagem de objetos
 #### 3.1. Descrição
 
+Nesse programa foi implementado um algoritmo para realizar a contagem de objetos com e sem buracos presentes em uma figura. Para isso usaremos a função `cv2.floodFill()` para marcar e contar tais objetos.
+
+Inicialmente percebemos que a implementação proposta apresentava a limitação de não ser capaz de contar mais do que 255 objetos em uma imagem de 8 bits, pois o valor da contagem é usado para preencher cada objeto encontrado. Uma forma forma de contornar isso seria simplesmente usar um valor fixo para ser usado no preenchimento dos objetos encontrados pela função `cv2.floodFill()`, permitindo a contagem de mais de 255 objetos. Outra forma seria usar uma imagem em ponto flutuante, o que nos gera uma gama infinita de valores possíveis e, portanto, também eliminaria o problema.
+
+O código usado para a resolução desse problema pode ser encontrado [aqui]()
+
 #### 3.2. Explicando o código
 
+Começamos removendo os objetos que tocam a borda da imagem. Para isso usamos loops aninhados para percorrer todos os pixels das bordas da imagem, aplicando a função `cv2.floodFill()` em todos que possuam intensidade 255. Ao aplicarmos a função usamos a intensidade 0 para preencher cada um dos objetos, de forma que eles passam a ser incorporados ao background a imagem. Além disso, para cada objeto encontrado, incrementamos um contador que será usado para imprimir na tela a quantidade de objetos removidos.  
+
+```python
+# load the image
+img = cv2.imread('media/bolhas.png', 0)
+
+# show original image
+cv2.imshow('Original', img)
+
+# remove objects touching the border of the image
+n_removed_objects = remove_border_objects(img)
+print("Number of objects removed: ", n_removed_objects)
+```
+
+```python
+def remove_border_objects(image):
+    height, width = image.shape[:2]
+    n_removed_objects = 0
+    seed = [0, 0]
+
+    for x in [0, height-1]:
+        for y in range(0, width):
+            if image[x, y] == 255:
+                n_removed_objects += 1
+                seed = [y, x]
+                cv2.floodFill(image, None, tuple(seed), 0)
+
+    for y in [0, width-1]:
+        for x in range(0, height):
+            if image[x, y] == 255:
+                n_removed_objects += 1
+                seed = [y, x]
+                cv2.floodFill(image, None, tuple(seed), 0)
+
+    # create a copy of the image to write the text and show
+    image_copy = image.copy()
+
+    # Write how many objets were removed from the image in the copy of the image
+    cv2.putText(image_copy, str(n_removed_objects) + ' Objects removed',
+                org=(5, 15),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.5,
+                color=(255, 255, 255),
+                thickness=1)
+
+    # show the copy of the image with the text
+    cv2.imshow('Border removed', image_copy)
+
+    return n_removed_objects
+```
+
+Agora devemos contar quantos objetos restam na imagem. Usamos novamente loops aninhados, mas dessa vez percorremos todos os pixels da imagem, aplicando novamente a função `cv2.floodFill()` para marcar os objetos encontrados com intensidade 255. Porém, dessa vez, usamos o valor 100 para preencher os objetos encontrados, dessa forma eles não serão contados mais de uma vez e nem possuirão o mesmo tom do background. Assim como quando removemos os objetos das bordas, incrementamos um contador a cada objeto encontrado para que possamos imprimir a contagem final na tela após o término dos loops.
+
+```python
+
+# label and count the total number of objects
+n_objects = count_objects(img)
+print("Number of objects: ", n_objects)
+
+```
+
+```python
+
+def count_objects(image):
+    height, width = image.shape[:2]
+    seed = [0, 0]
+    n_objects = 0
+
+    for x in range(0, height):
+        for y in range(0, width):
+            if img[x, y] == 255:
+                n_objects += 1
+                seed = [y, x]
+                cv2.floodFill(img, None, tuple(seed), 100)
+
+    # create a copy of the image
+    image_copy = image.copy()
+
+    # Write the object count
+    cv2.putText(image_copy, str(n_objects) + ' Objects',
+                org=(5, 15),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.5,
+                color=(255, 255, 255),
+                thickness=1)
+
+    # show the copy of the image with the text
+    cv2.imshow('Object Count', image_copy)
+
+    return n_objects
+
+```
+
+E, por fim, contamos os objetos que possuem furos, mas para isso precisamos realizar alguma etapas extras. Começamos por usar a função `cv2.floodFill()` para, a partir da borda superior da imagem, preencher completamente o background com o valor 255. Dessa forma, os únicos pixels restantes com um valor 0 são aqueles localizados no interior de um objeto.
+
+Usamos dois loops aninhados para percorrer novamente toda a imagem. Ao encontrar um pixel com valor 0, significa que encontramos um buraco, mas precisamos verificar se ele pertence a um objeto que já contamos ou não. Para isso verificamos o pixel imediatamente anterior ao encontrado: caso ele tenha um valor diferente do background (atualmente 255), significa que o buraco encontrado está no interior de um objeto não contado, então nós aplicamos o `cv2.floodFill()` para mudar o valor tanto dos pixels do buraco quanto do objeto para 255 e incrementamos o contador. Agora, caso o pixel vizinho ao buraco tenha o valor do background, significa que o objeto no qual ele estava inserido já foi contado e possuía múltiplos furos. Dessa forma, aplicamos o `cv2.floodFill()` para mudarmos o valor para 255, mas não incrementamos o contador de objetos.
+
+Após o término dos loops, nós teremos uma imagem com o fundo branco e apenas os objetos sem furos com valor 100. Aplicamos novamente o `cv2.floodFill()` na borda superior da imagem para mudarmos novamente o valor do background para 0 e subtraímos essa imagem da imagem com todos os objetos. Dessa forma, terminamos com uma imagem que possui apenas os objetos com furos.
+
+```python
+
+# count the number of objects with holes
+n_holes = count_holes(img)
+print("Number of objects with holes: ", n_holes)
+
+cv2.waitKey(0)
+
+```
+
+```python
+
+def count_holes(image):
+    height, width = image.shape[:2]
+    seed = [0, 0]
+    n_holes = 0
+
+    # create a copy of the image
+    image_copy = image.copy()
+
+    # floodfill the background of the image with 255, the the only pixels with value equal to 0 are inside an object
+    cv2.floodFill(img, None, (0, 0), 255)
+
+    for x in range(0, height):
+        for y in range(0, width):
+            # if we find a pixel with 0, we check if its neighbour is an object or the new 255 background
+            if img[x, y] == 0:
+                # if its the background, it means that we have already counted the object and that it had multiple holes
+                if img[x-1, y] == 255:
+                    seed = [y, x]
+                    cv2.floodFill(img, None, tuple(seed), 255)
+                # if its different then the beackground, it means that we have found a new object with a hole in it
+                else:
+                    n_holes += 1
+                    seed = [y, x]
+                    cv2.floodFill(img, None, tuple(seed), 255)
+                    # we also fill the object
+                    seed = [y, x-1]
+                    cv2.floodFill(img, None, tuple(seed), 255)
+
+    # floofill the background back to zero
+    cv2.floodFill(img, None, (0, 0), 0)
+
+    # subtract the image with only the objects without holes from the original copy previously created
+    image_copy = image_copy - image
+
+    # write the number of objects with holes
+    cv2.putText(image_copy, str(n_holes) + ' Objects with holes',
+                org=(5, 15),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.5,
+                color=(255, 255, 255),
+                thickness=1)
+
+    # show the copy of the image with the text
+    cv2.imshow('Objects with holes', image_copy)
+
+    return n_holes
+
+```
+
 #### 3.3. Resultados
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 4. Equalização de histogramas
 #### 4.1. Descrição
@@ -200,16 +372,23 @@ Abaixo podemos ver exemplos da imagem embaralhada com diferentes quantidades de 
 
 #### 4.3. Resultados
 
-## 5. Aplicação de filtros
+## 5. Detector de movimento
 #### 5.1. Descrição
 
 #### 5.2. Explicando o código
 
 #### 5.3. Resultados
 
-## 6. Tilt Shift
+## 6. Aplicação de filtros
 #### 6.1. Descrição
 
 #### 6.2. Explicando o código
 
-#### 6.3. Resultados  
+#### 6.3. Resultados
+
+## 7. Tilt Shift
+#### 7.1. Descrição
+
+#### 7.2. Explicando o código
+
+#### 7.3. Resultados  
