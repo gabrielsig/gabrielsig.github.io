@@ -98,6 +98,6 @@ Na primeira imagem podemos ver o resultado após uma região qualquer ser seleci
 
 Já na segunda imagem podemos ver o que acontece quando o usuário seleciona duas regiões que possuem uma interseção. Nessa região o valor dos pixels volta ao original, pois o negativo do negativo é a própria imagem:
 
-![regions1](images/regions/regions2.png)
+![regions1](gabrielsig.github.io/images/regions/regions2.png)
 
 ## 2. Troca de regiões da imagem
