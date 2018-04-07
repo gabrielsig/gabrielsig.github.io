@@ -94,7 +94,7 @@ cv2.destroyAllWindows()
 
 Na primeira imagem podemos ver o resultado após uma região qualquer ser selecionada pelo usuário:
 
-![regions1](images/regions/regions1.png)
+![regions1](regions1.png)
 
 Já na segunda imagem podemos ver o que acontece quando o usuário seleciona duas regiões que possuem uma interseção. Nessa região o valor dos pixels volta ao original, pois o negativo do negativo é a própria imagem:
 
