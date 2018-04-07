@@ -1,4 +1,4 @@
-# Considerações iniciais
+# Processamento Digital de Imagens
 
 Esta página tem o objetivo de exibir os trabalhos realizados para a disciplina Processamento DIgital de Imagens (DCA0445) ministrada pelo professor [Agostinho Brito](http://agostinhobritojr.github.io/).
 
@@ -94,10 +94,120 @@ cv2.destroyAllWindows()
 
 Na primeira imagem podemos ver o resultado após uma região qualquer ser selecionada pelo usuário:
 
-![regions1](regions1.png)
+![regions1](gabrielsig.github.io/images/regions/regions1.png)
 
 Já na segunda imagem podemos ver o que acontece quando o usuário seleciona duas regiões que possuem uma interseção. Nessa região o valor dos pixels volta ao original, pois o negativo do negativo é a própria imagem:
 
 ![regions1](gabrielsig.github.io/images/regions/regions2.png)
 
 ## 2. Troca de regiões da imagem
+#### 2.1. Descrição
+
+Neste exercício foi proposto a implementação de um programa que carregue uma imagem e faça a troca dos quadrantes da mesma em diagonal. Porém, além dessa implementação, decidimos construir um programa que solicita do usuário em quantas partes ele quer dividir a imagem, realiza um embaralhamento aleatório dessas sub imagens e monta uma nova imagem.
+
+O código completo da troca de regiões pode ser obtido [aqui]() e o do embaralhamento [aqui]()
+
+#### 2.2. Explicando o código
+
+Como o programa de embaralhamento é construído em cima do programa que apenas troca as regiões da imagem, usamos ele como referência nas explicações por ser um pouco mais complexo.
+
+Inicialmente a imagem é carregada e obtemos sua altura e largura, solicitamos do usuário quantos blocos horizontais e verticais ele quer que a imagem seja dividida e checamos se os valores fornecidos são divisores das dimensões da imagem. Caso os valores sejam válidos, calculamos os tamanhos dos blocos que serão usados.
+
+```python
+img = cv2.imread('media/hermes2.jpeg')
+
+height, width = img.shape[:2]
+
+print('Image size: x = {} | y = {}'.format(height, width))
+
+n_rows = int(input("Type the number of rows: "))
+n_cols = int(input("Type the number of columns: "))
+
+if height % n_rows != 0:
+    print("[ERROR]: image height is not divisible by the number provided")
+    exit()
+elif width % n_cols != 0:
+    print("[ERROR]: image height is not divisible by the number provided")
+    exit()
+
+x_size = int(height / n_rows)
+y_size = int(width / n_cols)
+```
+
+Criamos uma lista (`s`) onde armazenaremos os blocos da imagem. Para gerar esses blocos, percorremos a imagem em incrementos de `x_size` de 0 até `height` e em incrementos de `y_size` de 0 até `width`. Em cada iteração desses loops aninhados, o bloco com coordenadas `(i,  j)` até `(i + x_size, j + y_size)` é concatenado no array `s`.
+
+Com o vetor `s` preenchido, aplicamos a função `np.random.shuffle()` para realizar o embaralhamento das posições.
+
+```python
+s = []
+
+for i in range(0, height, x_size):
+    for j in range(0, width, y_size):
+        s.append(img[i:(i+x_size), j:(j+y_size)])
+
+np.random.shuffle(s)
+```
+
+Posteriormente, criamos outra lista (`rows`) onde uniremos os elementos de `s` para formar as linhas da imagem. Fazemos um loop de 0 até `n_rows` e em cada iteração concatenamos `n_cols` elementos de `s` para formar uma posição da nova lista.
+
+Caso a imagem seja dividida em 5 linhas e 10 colunas, por exemplo, a lista `rows` terá 5 posições representando cada uma das linhas. Em cada uma dessas posições concatenamos 10 elementos do vetor `s`.
+
+Por fim, concatenamos os elementos da lista `rows` para formar a nova imagem e a exibimos na tela.
+
+```python
+rows = []
+
+for i in range(0, n_rows):
+    print(i * n_cols, (i + 1) * n_cols)
+    rows.append(np.concatenate(tuple(s[i * n_cols:(i + 1) * n_cols]), 1))
+
+new_img = np.concatenate(tuple(rows[:]))
+
+cv2.imshow("Original Image", img)
+cv2.imshow("Shuffle {} x {}".format(n_rows,n_cols), new_img)
+cv2.waitKey(0)
+
+cv2.destroyAllWindows()
+```
+
+#### 2.3. Resultados
+
+Abaixo podemos ver exemplos da imagem embaralhada com diferentes quantidades de linhas e colunas:
+
+
+
+
+
+
+
+
+
+
+
+## 3. Contagem de objetos
+#### 3.1. Descrição
+
+#### 3.2. Explicando o código
+
+#### 3.3. Resultados
+
+## 4. Equalização de histogramas
+#### 4.1. Descrição
+
+#### 4.2. Explicando o código
+
+#### 4.3. Resultados
+
+## 5. Aplicação de filtros
+#### 5.1. Descrição
+
+#### 5.2. Explicando o código
+
+#### 5.3. Resultados
+
+## 6. Tilt Shift
+#### 6.1. Descrição
+
+#### 6.2. Explicando o código
+
+#### 6.3. Resultados  
