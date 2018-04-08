@@ -357,22 +357,180 @@ Abaixo podemos ver as imagens geradas pelo algoritmo nas diversas etapas da exec
 
 ![labeling1](gabrielsig.github.io/images/labeling/labeling1.png)
 
-
-
-
-
-
-
-
-
-
-
 ## 4. Equalização de histogramas
 #### 4.1. Descrição
 
+Esse exercício tem como objetivo o desenvolvimento de um programa que realize a equalização de imagens antes de exibi-las na tela. Foram desenvolvidas duas variações: uma para fotos e outra para vídeos capturados pela webcam.
+
+Quando trabalhamos com fotos, foi possível desenvolver uma função para gerar o histograma acumulado da imagem e posteriormente usá-lo como função de transformação para gerar a imagem equalizada. Porém, ao trabalharmos com vídeo da webcam, houveram problemas de performance ao tentar usar esse método. Portanto, o mesmo foi substituído pela função do openCV `cv2.equalizeHIst()`, por ser mais otimizada.
+
+Além disso, os dois códigos possuem poucas diferenças, e estas serão discutidas mais a frente quando os os mesmos forem explicados.
+
+O algoritmo para imagens pode ser encontrado [aqui]() e para videos [aqui]().
+
 #### 4.2. Explicando o código
 
+Primeiro discutiremos o algoritmo para fotos, já que a equalização feita nele foi alcançada por meio de funções desenvolvidas a partir da teoria vista em sala de aula.
+
+Inicialmente carregamos a imagem em tons de ciza e calculamos seu histograma por meio da função `cv2.calcHist()`. Então passamos esse histograma como argumento para a função `calc_accumulated_hist()` a fim de obtermos o histograma acumulado.
+
+Essa função cria uma nova lista e usa um loop para concatenar novos elementos na forma de uma soma acumulada, onde cada elemento é a soma de todos os anteriores.
+
+```python
+
+img = cv2.imread('media/farol.jpg', 0)
+
+height, width = img.shape[:2]
+
+# number of bins of the histogram
+nbins = 256
+
+# calculate the histogram
+hist = cv2.calcHist([img], [0], None, [nbins], [0, 256])
+
+# calculate the accumulated histogram
+accum_hist = calc_accumulated_histogram(hist)
+
+```
+
+```python
+
+def calc_accumulated_histogram(histogram):
+    accum_hist = []
+    accum_hist.append(int(histogram[0]))
+    for i in range(1, len(histogram)):
+        accum_hist.append(accum_hist[i - 1] + int(histogram[i]))
+
+    return accum_hist
+
+```
+
+Passamos o histograma accumulado e a referência da imagem para a função `equalize()`, que tem como retorno a imagem equalizada.
+
+Essa função usa cada elemento do histograma acumulado para realizar a transformação da imagem. Esse processo gera uma nova imagem com tons mais espalhados pelo espectro, ou seja: o histograma da imagem equalizada tende a ser mais normalizado e, portanto, o histograma acumulado se aproxima de linear.
+
+```python
+# equalize the image
+eq_img = equalize(accum_hist, img)
+
+```
+
+```python
+def equalize(accum_hist, img):
+
+    eq_img = img.copy()
+
+    for x in range(0, height):
+        for y in range(0, width):
+            # the index in the histogram is the intensity value at (x, y)
+            index = img[x, y]
+            eq_img[x, y] = np.round(accum_hist[index] * 255 / (height * width))
+
+    return eq_img
+
+```
+Calculamos o histograma da imagem equalizada tal como seu histograma acumulado, assim podemos plotar gráficos para comparar a imagem antes e após o processo. Além disso fazemos a normalização dos dois histogramas acumulados para facilitar a visualização dos gráficos.
+
+Por fim mostramos as figuras e os gráficos.
+
+```python
+# calculate the histogram of the new image
+hist2 = cv2.calcHist([eq_img], [0], None, [nbins], [0, 256])
+
+# calculate the accumulated histogram of the equalized image
+accum_hist2 = calc_accumulated_histogram(hist2)
+
+# normalize the accumulated histograms to show the graphs
+accum_hist_norm = [x / (height*width) for x in accum_hist]
+accum_hist_norm2 = [x / (height*width) for x in accum_hist2]
+
+
+cv2.imshow('original', img)
+cv2.imshow('equalized', eq_img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+plt.title('Accumulated histograms (normalized)')
+plt.plot(accum_hist_norm, 'k')
+plt.plot(accum_hist_norm2, 'b')
+plt.xlim([0, nbins])
+plt.show()
+
+plt.title('Histograms')
+plt.plot(hist, 'k')
+plt.plot(hist2, 'b')
+plt.xlim([0, nbins])
+plt.show()
+```
+
+O código para vídeos é bastante similar, só que ao invés de usarmos a função `equalize()` usamos `cv2.equalizeHist()`, e usamos `cap = cv2.VideoCapture()` para abrir a câmera em conjunto com `ret, frame = cap.read()` dentro de um loop para capturar os frames em tempo real. O código completo pode ser visto abaixo:
+
+```python
+
+cap = cv2.VideoCapture()
+
+cap.open(1)
+
+if not cap.isOpened():
+    print('[ERROR]: Camera is unavailable')
+    exit(0)
+
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+print('height = {}, width = {}'.format(height, width))
+
+nbins = 256
+
+while True:
+    ret, frame = cap.read()
+
+    # convert the frame to black and white and then to floating point
+    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # calculate the histogram
+    hist = cv2.calcHist([frame_gray], [0], None, [nbins], [0, 256])
+
+    # calculate the accumulated histogram
+    accum_hist = []
+    accum_hist.append(int(hist[0]))
+    for i in range(1, len(hist)):
+        accum_hist.append(accum_hist[i - 1] + int(hist[i]))
+
+    # equalize the image
+    eq_frame_gray = cv2.equalizeHist(frame_gray)
+
+    cv2.imshow('Original', frame_gray)
+    cv2.imshow('Equalized', eq_frame_gray)
+
+    # wait for a key to be pressed
+    key = cv2.waitKey(1) & 0xFF
+    # if the esc key is pressed, close without saving
+    if key == 27:
+        break
+    # if the space bar is pressed, save and close
+    # elif key == 32:
+    #     break
+
+cap.release()
+cv2.destroyAllWindows()
+```
+
 #### 4.3. Resultados
+
+Logo abaixo podemos ver a imagem original em conjunto com a imagem obtida após o processo de equalização. O aumento do contraste na segunda imagem é visível, o que denota um espalhamento dos tons no histograma:
+
+![hist1](gabrielsig.github.io/images/histogram/hist1.png)
+
+Analisando os gráficos dos histogramas e histogramas acumulados, podemos concluir que esse é mesmo o caso: podemos ver que o histograma da imagem equalizada (em azul) está mais uniformemente distribuído do que o da imagem antes do processo (em preto). Além disso, vemos que o histograma acumulado tende a uma reta, assim como sugerido anteriormente.
+
+![hist_graph](gabrielsig.github.io/images/histogram/hist_graph.png)
+
+![accum_hist_graph](gabrielsig.github.io/images/histogram/accum_hist_graph.png)
+
+Por fim, vemos o resultado do mesmo processo aplicado a um vídeo da webcam:
+
+![hist2](gabrielsig.github.io/images/histogram/hist2.png)
 
 ## 5. Detector de movimento
 #### 5.1. Descrição
