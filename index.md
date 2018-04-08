@@ -981,7 +981,7 @@ def on_blur_change(slider_pos):
 
 Abaixo podemos ver a imagem original, seguida da máscara aplicada no tiltshift e a imagem após o processamento
 
-![tiltshift1](gabrielsig.github.io/images/tiltshift/tiltshift1.png)
+![tiltshift1](gabrielsig.github.io/images/tiltshift/tiltshift1.jpg)
 
 ![mask1](gabrielsig.github.io/images/tiltshift/mask1.png)
 
