@@ -1,8 +1,10 @@
 # Processamento Digital de Imagens
 
-Esta página tem o objetivo de exibir os trabalhos realizados para a disciplina Processamento DIgital de Imagens (DCA0445) ministrada pelo professor [Agostinho Brito](http://agostinhobritojr.github.io/).
+Esta página tem o objetivo de exibir os trabalhos realizados para a disciplina Processamento Digital de Imagens (DCA0445) ministrada pelo professor [Agostinho Brito](http://agostinhobritojr.github.io/).
 
-Todos os códigos foram implementados em Python com a biblioteca OpenCV. Os tutoriais, assim como os exercícios, disponibilizados pelo professor podem ser vistos [aqui](http://agostinhobritojr.github.io/tutoriais/pdi/).  
+Todos os códigos foram implementados em Python com a biblioteca OpenCV. Para usa-los basta instalar a biblioteca no seu ambiente Python e realizar a execução normalmente.
+
+Os tutoriais assim como os exercícios disponibilizados pelo professor podem ser vistos [aqui](http://agostinhobritojr.github.io/tutoriais/pdi/).  
 
 # Unidade 1
 ## 1. Aplicação de negativo
@@ -651,13 +653,183 @@ Ajustamos os parâmetros até chegarmos em uma configuração boa para a cena em
 
 ![motion_detector2](gabrielsig.github.io/images/motion/motion_detector2.png)
 
-
-## 6. Aplicação de filtros
+## 6. Aplicação de filtros espaciais
 #### 6.1. Descrição
+
+Esse programa tem como objetivo a aplicação de filtros em vídeos capturados pela webcam, mais precisamente a implementação do filtro laplaciano do gaussiano.
+
+Assim como no programa anterior, usaremos trackbars para garantir ao usuário mais controle sobre o programa: A primeira possibilita a escolha de um entre os 6 filtros diferentes; A segunda fornece a possibilidade de visualizar o resultado da filtragem de forma normalizada ou absoluta; E a última possibilita a escolha da intensidade do filtro, ou quantas vezes a máscara será convolucional com a imagem (mais útil para os filtros de borramento).
+
+O código completo do programa de filtragem espacial pode ser encontrado [aqui]()
 
 #### 6.2. Explicando o código
 
+Começamos inicializando a câmera como de costume, instanciando a janela e as trackbars, tal como declarando as variáveis que serão modificadas por elas.
+
+```python
+cap = cv2.VideoCapture()
+
+cap.open(1)
+
+if not cap.isOpened():
+    print('[ERROR]: Camera is unavailable')
+    exit(0)
+
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+# default filter is no filter
+filter_type = 0
+absolute = 0
+filter_intensity = 1
+menu_slider_name = '0: No filter\n' \
+                   '1: Mean\n' \
+                   '2: Gaussian\n' \
+                   '3: Vertical Sobel\n' \
+                   '4: Horizontal Sobel\n' \
+                   '5: Laplacian\n' \
+                   '6: Laplacian of Gaussian'
+absolute_slider_name = '0: Normalized\n' \
+                       '1: Absolute'
+
+cv2.namedWindow('spatial filter')
+cv2.createTrackbar(menu_slider_name, 'spatial filter', 0, 6, on_menu_change)
+cv2.createTrackbar(absolute_slider_name, 'spatial filter', 0, 1, on_absolute_change)
+cv2.createTrackbar('Filter intensity (+1)', 'spatial filter', 0, 9, on_intensity_change)
+```
+
+```python
+def on_menu_change(slider_pos):
+    global filter_type
+    filter_type = slider_pos
+
+
+def on_absolute_change(slider_pos):
+    global absolute
+    absolute = slider_pos
+
+
+def on_intensity_change(slider_pos):
+    global filter_intensity
+    filter_intensity = slider_pos + 1
+```
+Com isso entramos no loop onde a lógica do programa é executada. Primeiro carregamos o frame atual da câmera e o convertemos para tons de cinza e `float32`.  Então usamos a função `aaply_filter` para aplicar o filtro selecionado pelo usuário nessa imagem em ponto flutuante (o funcionamento detalhado dessa função será descrita mais à frente).
+
+Após obtermos o resultado do filtro, verificamos se o usuários selecionou a opção `absolute`. Em caso positivo, usamos a função `np.absolute()` para obtermos a imagem com valores absolutos. Já em caso negativo, usamos a função `cv2.normalize()` para normalizar a imagem.
+
+Por ultimo, convertemos a imagem de volta para `uint8` e a exibimos na tela.
+
+```python
+while True:
+    ret, frame = cap.read()
+
+    # convert the frame to black and white and then to floating point
+    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    frame_gray32 = np.array(frame_gray, dtype=np.float32)
+
+    # apply the filter
+    filter_output = apply_filter(frame_gray32, filter_type, filter_intensity)
+
+    # check if the absolute option is True
+    if absolute:
+        filter_output = np.absolute(filter_output)
+    else:
+        filter_output = cv2.normalize(filter_output, None, 0, 255, cv2.NORM_MINMAX)
+
+    # convert the result back to a uint8 image
+    result = np.array(filter_output, dtype=np.uint8)
+
+    # show processed image
+    cv2.imshow('spatial filter', result)
+
+    if cv2.waitKey(1) == 27:
+        break  # esc to quit
+
+cap.release()
+cv2.destroyAllWindows()
+```
+A função `apply_filter()` recebe como parâmetros a imagem em ponto flutuante, o tipo de filtro (inteiro de 0 a 6 definido pela trackbar) e o número de passadas da máscara (inteiro de 1 a 10 também definido pela trackbar).
+
+Criamos uma máscara 3x3 de zeros que, de acordo com o filtro selecionado pelo usuário, recebe os valores apropriados para cada caso. No caso do filtro laplaciano do gaussiano, a mascara inicialmente assume os valores da mascara do filtro gaussiano.
+
+Com a mascara definida, usamos a função `cv2.filter2D()` para realizar as convoluções com a imagem. Caso o número de passadas selecionada pelo usuário for maior do que 1, entramos em um loop para realizar a aplicação do filtro múltiplas vezes.
+
+Por último, verificamos se o usuário selecionou a opção 6, que se refere ao filtro laplaciano do gaussiano. Nesse caso, substituímos a máscara pela laplaciana e  usamos a função `cv2.filter2D()` para aplicamos novamente o filtro a imagem com essa nova máscara. Assim somos capazes de obter o resultado da aplicação composta do filtro gaussiano e laplaciano.
+
+```python
+def apply_filter(src_img, filter_type, n_passes=1):
+
+    # create a generic 3x3 mask
+    mask = np.zeros([3, 3])
+
+    # check which filter was selected and apply the correponding mask
+    if filter_type == 0:
+        # no Filter
+        return src_img
+    elif filter_type == 1:
+        # mean filter
+        # cv2.blur()
+        mask = np.ones([3, 3]) / (3**2)
+    elif filter_type == 2:
+        # gaussian filter
+        # cv2.GaussianBlur()
+        # cv2.getGaussianKernel()
+        mask = np.array([[1, 2, 1],
+                         [2, 4, 2],
+                         [1, 2, 1]]) / 16
+    elif filter_type == 3:
+        # vertical sobel border detector
+        # cv2.Sobel()
+        mask = np.array([[-1, 0, 1],
+                         [-2, 0, 2],
+                         [-1, 0, 1]])
+    elif filter_type == 4:
+        # horizontal sobel border detector
+        # cv2.Sobel()
+        mask = np.array([[-1, -2, -1],
+                         [0, 0, 0],
+                         [1, 2, 1]])
+    elif filter_type == 5:
+        # laplacian filter
+        # cv2.Laplacian()
+        mask = np.array([[0, -1, 0],
+                         [-1, 4, -1],
+                         [0, -1, 0]])
+    elif filter_type == 6:
+        # laplacian of gaussian filter, so we first use the gaussian mask
+        mask = np.array([[1, 2, 1],
+                         [2, 4, 2],
+                         [1, 2, 1]]) / 16
+    else:
+        print('[ERROR]: could not select one of the available filters')
+
+    # apply the filter with the selected mask
+    out_img = cv2.filter2D(src_img, -1, mask)
+
+    # apply multiple times if n_passes > 1
+    if n_passes > 1:
+        for n in range(0, n_passes-1):
+            out_img = cv2.filter2D(out_img, -1, mask)
+
+    # if we select the laplacian of gaussian, we replace the gaussian mask with the laplacian
+    # and apply the filter again
+    if filter_type == 6:
+        mask = np.array([[0, -1, 0],
+                         [-1, 4, -1],
+                         [0, -1, 0]])
+        out_img = cv2.filter2D(out_img, -1, mask)
+
+    return out_img
+```
 #### 6.3. Resultados
+
+Abaixo podemos ver a aplicação do filtro laplaciano e logo em seguida do filtro laplaciano do gaussiano, ambos exibidos com a opção `absolute` selecionada.
+
+Podemos ver claramente a presença de muito ruído quando é aplicado apenas o filtro laplaciano. Esse não o caso da segunda imagem, pois o ruído é suavizado pelo borramento realizado pelo filtro gaussiano quando aplicamos o laplaciano do gaussiano.
+
+![filter1](gabrielsig.github.io/images/filter/filter1.png)
+
+![filter1](gabrielsig.github.io/images/filter/filter2.png)
 
 ## 7. Tilt Shift
 #### 7.1. Descrição
