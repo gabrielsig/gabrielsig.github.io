@@ -535,9 +535,122 @@ Por fim, vemos o resultado do mesmo processo aplicado a um vídeo da webcam:
 ## 5. Detector de movimento
 #### 5.1. Descrição
 
+Esse programa tem como objetivo detectar movimentos em uma cena capturada pela webcam. Para isso calculamos a componente vermelha do histograma da imagem e o comparamos com um histograma anterior para detectar diferenças significativas.
+
+Existem vários métodos para comparar histogramas, optamos por usar o método chi-square por ter se mostrado mais estável nas condições de teste estabelecidas. Além disso, foram implementadas duas trackbars para que o usuário possa mudar dinamicamente o valor de threshold e a quantidade de frames que o programa deve esperar até mudar o histograma usado na comparação da cana.
+
+O código completo do detector de movimento pode ser encontrado [aqui]()
+
 #### 5.2. Explicando o código
 
+Inicialmente abrimos a câmera, capturamos o primeiro frame, aplicamos um filtro de média para reduzir um pouco o ruído da câmera e então calculamos e normalizamos o histograma da componente vermelha. Esse histograma será usado como primeiro histograma de comparação.
+
+```python
+cap = cv2.VideoCapture()
+
+cap.open(1)
+
+if not cap.isOpened():
+    print('[ERROR]: Camera is unavailable')
+    exit(0)
+
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+nbins = 256
+
+# capture the first frame
+ret, frame = cap.read()
+
+# slightly blur the frame to reduce noise from the camera
+frame = cv2.blur(frame, (3, 3))
+
+# calculate the red component histogram and normalize it
+old_r_hist = cv2.calcHist([frame], [2], None, [nbins], [0, 256])
+cv2.normalize(old_r_hist, old_r_hist, cv2.NORM_MINMAX).flatten()
+```
+
+Criamos as duas trackbars e as variáveis que serão ajustadas por elas. A primeira trackbar será usada para ajustar o threshold e a segunda para ajustar o delay (em número de frames) até que o programa atribua um novo valor para  ´old_r_hist´. Dessa forma esperamos que o programa possa ser adaptado para diferentes condições de iluminação do ambiente mais facilmente.
+
+```python
+iteration = 0
+threshold = 5
+frames_delay = 10
+
+# create the window an the trackbars
+cv2.namedWindow('motion detection')
+cv2.createTrackbar('Threshold adjuster', 'motion detection', 5, 50, adjust_threshold)
+cv2.createTrackbar('Histogram calculation delay\n(in number of frames)', 'motion detection', 10, 50, hist_calc_delay)
+```
+
+```python
+def adjust_threshold(slider_pos):
+    global threshold
+    threshold = slider_pos
+
+
+def hist_calc_delay(slider_pos):
+    global frames_delay
+    frames_delay = slider_pos
+```
+
+Então entramos em um loop onde um repetimos o processo descrito anteriormente para cada novo frame. O histograma desse novo frame é comparado pelo método de chi-square com o último histograma armazenado. Se o resultado da comparação for maior do que o threshold estabelecido pelo usuário, o texto `MOTION DETECTED!` é impresso na tela.
+
+Por fim, verificamos se a quantidade estabelecida de frames já foi excedida. Em caso positivo, copiamos o histograma atual para a variável `old_r_hist` e ele passa a ser usado nas comparações até que o limite seja excedido novamente.
+
+
+```python
+while True:
+    ret, frame = cap.read()
+
+    iteration += 1
+
+    # slightly blur the frame to reduce noise from the camera
+    frame = cv2.blur(frame, (3, 3))
+
+    # calculate the red component of the new histogram
+    new_r_hist = cv2.calcHist([frame], [2], None, [nbins], [0, 256])
+    cv2.normalize(new_r_hist, new_r_hist, cv2.NORM_MINMAX).flatten()
+
+    # compare the histograms with chi-squared method
+    result = cv2.compareHist(old_r_hist, new_r_hist, cv2.HISTCMP_CHISQR)
+
+    # if the result is larger then the threshold, some movement was detected
+    if result >= threshold:
+        cv2.putText(frame, 'MOTION DETECTED!',
+                    org=(10, height-10),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=1,
+                    color=(0, 0, 255),
+                    thickness=2)
+
+    # change the old histogram after the set amount of frames has passed
+    if iteration >= frames_delay:
+        # put the current histogram as the old histogram for the next comparison
+        old_r_hist = new_r_hist.copy()
+        iteration = 0
+
+    # show the current frame
+    cv2.imshow('motion detection', frame)
+
+    # wait for a key to be pressed
+    key = cv2.waitKey(1) & 0xFF
+    # if the esc key is pressed, close the program
+    if key == 27:
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+```
+
 #### 5.3. Resultados
+
+Ajustamos os parâmetros até chegarmos em uma configuração boa para a cena em questão. Abaixo podemos ver o output do programa quando não há movimentos na cena e logo em seguida quando um movimento foi detectado:
+
+![motion_detector1](gabrielsig.github.io/images/motion/motion_detector1.png)
+
+![motion_detector2](gabrielsig.github.io/images/motion/motion_detector2.png)
+
 
 ## 6. Aplicação de filtros
 #### 6.1. Descrição
