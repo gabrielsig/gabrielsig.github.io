@@ -834,6 +834,155 @@ Podemos ver claramente a presença de muito ruído quando é aplicado apenas o f
 ## 7. Tilt Shift
 #### 7.1. Descrição
 
+Esse exercício tem como objetivo a aplicação de um efeito tilt shift em uma imagem, que faz com que os objetos tenham uma aparência de miniatura. Esse efeito é obtido aplicando um filtro de borramento nas bordas da imagem e pode ser melhorado se elevarmos a saturação da mesma.
+
+Assim como nas questões anteriores, usaremos trackbars para fornecer um controle mais dinâmico ao usuário: a primeira é responsável por ajustar a linha de foco da imagem; a segunda para regular o tamanho da janela de foco; a terceira regula o decaimento do borramento; a quarta a intensidade desse borramento; e por último, a quinta nos dá a possibilidade de elevar a saturação da imagem.
+
+O código completo usado nesse exercício pode ser obtido [aqui]()
+
 #### 7.2. Explicando o código
 
+Começamos carregando a imagem e fazendo duas cópias: uma delas borrada e outra exatamente igual, que servirá para armazenar o resultado dos processamentos. Depois criamos duas máscaras preenchidas com zeros e do mesmo tamanho da imagem.
+
+Então inicializamos as variáveis que determinam o centro do foco, a abertura da janela e o decaimento do borramento.
+
+Instanciamos a janela e as trackbars e fazemos uma chamada a função `update_tiltshift()` para que a imagem exibida na tela seja atualizada (o funcionamento dessa função será discutido posteriormente)
+
+Por fim, entramos em um loop cuja única função é exibir na tela a imagem atualizada e a máscara usada para obtê-la. Caso o usuário pressione `esc`, o programa é fechado sem salvar a imagem, e caso o usuário pressione a `barra de espaço` o programa salva a imagem processada e fecha.
+
+```python
+# load the image, create a copy, a blurred copy and another copy to store the final result
+img = cv2.imread('media/rome3.jpg')
+img_copy = img.copy()
+tiltshifted_img = img.copy()
+blurred_img = cv2.blur(img, (5, 5))
+
+img_height, img_width = img.shape[:2]
+
+# create the mask and the negative mask with the same size as the image
+mask = np.zeros(img.shape, dtype=np.float32)
+mask_negative = mask.copy()
+
+center_line = int(img_height / 2)
+l1 = center_line - int(img_height / 4)
+l2 = center_line + int(img_height / 4)
+decaimento = 50
+
+cv2.namedWindow('Tiltshift')
+cv2.createTrackbar('Focus center line', 'Tiltshift', 50, 100, on_focus_change)
+cv2.createTrackbar('Focus window height', 'Tiltshift', 50, 100, on_window_height_change)
+cv2.createTrackbar('Blur gradient', 'Tiltshift', 50, 100, on_gradient_change)
+cv2.createTrackbar('Blur intensity', 'Tiltshift', 0, 10, on_blur_change)
+cv2.createTrackbar('Saturation', 'Tiltshift', 0, 5, on_saturation_change)
+
+update_tiltshift()
+
+while True:
+    # display the image
+    cv2.imshow('Tiltshift', tiltshifted_img)
+    cv2.imshow('mask', mask)
+
+    # wait for a key to be pressed
+    key = cv2.waitKey(1) & 0xFF
+    # if the esc key is pressed, close without saving
+    if key == 27:
+        break
+    # if the space bar is pressed, save and close
+    elif key == 32:
+        cv2.imwrite('media/Tilt_shifted.jpg', tiltshifted_img)
+        break
+
+# destroy all windows
+cv2.destroyAllWindows()
+```
+A função `update_tiltshif()` é chamada sempre que alguma das trackbars sofre qualquer alteração. Ela é responsável por re aplicar a função `apha()` em todas as linhas da máscara e fazer uma adição ponderada na forma `output_img = input_img * mask + blurred_img * (1 - mask)`, ou seja: a imagem é multiplicada pela máscara e somada com a imagem borrada multiplicada pelo negativo da máscara. Isso nos dá o efeito tilt shift desejado.
+
+```python
+# x = linha da imagem onde o alpha deve ser calculado
+# l1,l2 = linhas onde o valor de alpha eh 0.5
+# d = forca do decaimento
+def alpha(x, l1, l2, d):
+    if d == 0:
+        d += 0.0001
+    return (1/2)*(np.tanh((x-l1)/d) - np.tanh((x-l2)/d))
+
+
+def update_tiltshift():
+    global mask, tiltshifted_img
+
+    # update the mask and the processed image
+    for x in range(0, img_height):
+        alpha_x = alpha(x, l1, l2, decaimento)
+
+        mask[x, :] = alpha_x
+        tiltshifted_img[x, :] = cv2.addWeighted(img_copy[x, :], alpha_x, blurred_img[x, :], 1-alpha_x, 0)
+```
+
+As funções chamadas pelas trackbars podem ser vistas a seguir. Cada uma delas é responsável por alterar alguma das variáveis relacionadas ao efeito de acordo com a posição do indicador.
+
+```python
+def on_saturation_change(slider_pos):
+    global img_copy
+    # saturation multiplier ranging from 1.0 to 3.5 in increments of 0.5
+    saturation_multiplier = (slider_pos * 2.5 / 5)+1
+    # change the color space to HSV so we can easly modify the saturation
+    img_copy = cv2.cvtColor(img, cv2.COLOR_BGR2HSV).astype("float32")
+    # split the planes
+    (h, s, v) = cv2.split(img_copy)
+    # multiply the saturation with the selected multiplier
+    s = s * saturation_multiplier
+    # nomalize values that fall outside the 0 to 255 range
+    s = np.clip(s, 0, 255)
+    # merge the planes again and convert the image back to BGR color space
+    img_copy = cv2.merge([h, s, v])
+    img_copy = cv2.cvtColor(img_copy.astype("uint8"), cv2.COLOR_HSV2BGR)
+    # update the blurred image and the tilt shift
+    blur_intensity_slider = cv2.getTrackbarPos('Blur intensity', 'Tiltshift')
+    on_blur_change(blur_intensity_slider)
+    update_tiltshift()
+
+
+def on_focus_change(slider_pos):
+    global center_line
+    center_line = int(slider_pos * (img_height - 1) / 100)
+
+    # update the window height with the new position of the focus center
+    focus_height_slider = cv2.getTrackbarPos('Focus window height', 'Tiltshift')
+    on_window_height_change(focus_height_slider)
+
+    # update the image
+    update_tiltshift()
+
+
+def on_window_height_change(slider_pos):
+    global l1, l2
+
+    window_height = int(slider_pos * (img_height - 1) / 100)
+    l1 = center_line - int(window_height/2)
+    l2 = center_line + int(window_height/2)
+    update_tiltshift()
+
+
+def on_gradient_change(slider_pos):
+    global decaimento
+    decaimento = slider_pos
+    update_tiltshift()
+
+
+def on_blur_change(slider_pos):
+    global blurred_img
+    blurred_img = cv2.blur(img_copy, (5, 5))
+    for i in range(0, slider_pos):
+        blurred_img = cv2.blur(blurred_img, (5, 5))
+    update_tiltshift()
+```
+
 #### 7.3. Resultados  
+
+Abaixo podemos ver a imagem original, seguida da máscara aplicada no tiltshift e a imagem após o processamento
+
+![tiltshift1](gabrielsig.github.io/images/tiltshift/tiltshift1.png)
+
+![mask1](gabrielsig.github.io/images/tiltshift/mask1.png)
+
+![tiltshift2](gabrielsig.github.io/images/tiltshift/tiltshift2.png)
