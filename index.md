@@ -4,15 +4,15 @@ Esta página tem o objetivo de exibir os trabalhos realizados para a disciplina 
 
 Todos os códigos foram implementados em Python com a biblioteca OpenCV. Para usa-los basta instalar a biblioteca no seu ambiente Python e realizar a execução normalmente.
 
-Os tutoriais assim como os exercícios disponibilizados pelo professor podem ser vistos [aqui](http://agostinhobritojr.github.io/tutoriais/pdi/).  
+Os tutoriais, assim como os exercícios disponibilizados pelo professor podem ser vistos [aqui](http://agostinhobritojr.github.io/tutoriais/pdi/).  
 
 # Unidade 1
 ## 1. Aplicação de negativo
 #### 1.1. Descrição
 
-Neste programa o usuário deve fornecer as coordenadas de dois pontos, P1 e P2, dentro dos limites da imagem. A partir disso o programa deverá aplicar um efeito de negativo na área da imagem localizada no interior da região definida por esses pontos pontos.
+Neste programa o usuário deve fornecer as coordenadas de dois pontos, P1 e P2, dentro dos limites da imagem. A partir disso o programa deverá aplicar um efeito de negativo na área da imagem localizada no interior da região definida por esses pontos.
 
-A fim de tornar o programa mais interativo, decidimos usar o mouse para definir a área entre os pontos ao invés de solicitar que o usuário digite as coordenadas na linha de comando. Essa lógica foi feita da seguinte maneira: Ao clicarmos e segurarmos o botão esquerdo do mouse em algum ponto da imagem, o programa armazena as coordenadas no ponto P1; então deve-se arrastar o mouse até a posição final e soltar o botão, assim o programa armazena esse segundo conjunto de coordenadas no ponto P2.
+A fim de tornar o programa mais interativo, decidimos usar o mouse para definir a área entre os pontos ao invés de solicitar que o usuário digite as coordenadas na linha de comando. Essa lógica foi feita da seguinte maneira: Ao clicarmos e segurarmos o botão esquerdo do mouse em algum ponto da imagem, o programa armazena as coordenadas no ponto P1; então, deve-se arrastar o mouse até a posição final e soltar o botão, assim o programa armazena esse segundo conjunto de coordenadas no ponto P2.
 
 O código completo dessa aplicação pode ser obtido [agui](github.com/gabrielsig)
 
@@ -94,24 +94,24 @@ cv2.destroyAllWindows()
 
 #### 1.3 Resultados
 
-Na primeira imagem podemos ver o resultado após uma região qualquer ser selecionada pelo usuário:
+Na primeira imagem podemos ver o resultado após o usuário selecionar uma região qualquer:
 
 ![regions1](gabrielsig.github.io/images/regions/regions1.png)
 
-Já na segunda imagem podemos ver o que acontece quando o usuário seleciona duas regiões que possuem uma interseção. Nessa região o valor dos pixels volta ao original, pois o negativo do negativo é a própria imagem:
+Já na segunda imagem, podemos ver o que acontece quando o usuário seleciona duas regiões que possuem uma interseção. Nessa região o valor dos pixels volta ao original, pois o negativo do negativo é a própria imagem:
 
 ![regions1](gabrielsig.github.io/images/regions/regions2.png)
 
 ## 2. Troca de regiões da imagem
 #### 2.1. Descrição
 
-Neste exercício foi proposto a implementação de um programa que carregue uma imagem e faça a troca dos quadrantes da mesma em diagonal. Porém, além dessa implementação, decidimos construir um programa que solicita do usuário em quantas partes ele quer dividir a imagem, realiza um embaralhamento aleatório dessas sub imagens e monta uma nova imagem.
+Neste exercício foi proposto a implementação de um programa que carregue uma imagem e faça a troca dos quadrantes da mesma em diagonal. Porém, além dessa implementação, decidimos construir um programa que solicita do usuário em quantas partes ele quer dividir a imagem para realizar um embaralhamento aleatório e reconstruir uma nova imagem.
 
 O código completo da troca de regiões pode ser obtido [aqui]() e o do embaralhamento [aqui]()
 
 #### 2.2. Explicando o código
 
-Como o programa de embaralhamento é construído em cima do programa que apenas troca as regiões da imagem, usamos ele como referência nas explicações por ser um pouco mais complexo.
+Como o programa de embaralhamento é construído em cima do programa que apenas troca as regiões da imagem, usamos ele como referência nas explicações a seguir por ser um pouco mais complexo.
 
 Inicialmente a imagem é carregada e obtemos sua altura e largura, solicitamos do usuário quantos blocos horizontais e verticais ele quer que a imagem seja dividida e checamos se os valores fornecidos são divisores das dimensões da imagem. Caso os valores sejam válidos, calculamos os tamanhos dos blocos que serão usados.
 
@@ -136,9 +136,9 @@ x_size = int(height / n_rows)
 y_size = int(width / n_cols)
 ```
 
-Criamos uma lista (`s`) onde armazenaremos os blocos da imagem. Para gerar esses blocos, percorremos a imagem em incrementos de `x_size` de 0 até `height` e em incrementos de `y_size` de 0 até `width`. Em cada iteração desses loops aninhados, o bloco com coordenadas `(i,  j)` até `(i + x_size, j + y_size)` é concatenado no array `s`.
+Criamos uma lista (`s`) onde armazenaremos os blocos da imagem. Para gerar esses blocos, percorremos a imagem em incrementos de `x_size` de 0 até `height` e em incrementos de `y_size` de 0 até `width`. Em cada iteração desses loops aninhados, o bloco com coordenadas `(i,  j)` até `(i + x_size, j + y_size)` é concatenado na lista `s`.
 
-Com o vetor `s` preenchido, aplicamos a função `np.random.shuffle()` para realizar o embaralhamento das posições.
+Com o vetor `s` preenchido, aplicamos a função `np.random.shuffle()` para realizar o embaralhamento dos elementos.
 
 ```python
 s = []
