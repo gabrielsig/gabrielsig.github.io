@@ -14,7 +14,7 @@ Neste programa o usuário deve fornecer as coordenadas de dois pontos, P1 e P2, 
 
 A fim de tornar o programa mais interativo, decidimos usar o mouse para definir a área entre os pontos ao invés de solicitar que o usuário digite as coordenadas na linha de comando. Essa lógica foi feita da seguinte maneira: Ao clicarmos e segurarmos o botão esquerdo do mouse em algum ponto da imagem, o programa armazena as coordenadas no ponto P1; então, deve-se arrastar o mouse até a posição final e soltar o botão, assim o programa armazena esse segundo conjunto de coordenadas no ponto P2.
 
-O código completo dessa aplicação pode ser obtido [agui](github.com/gabrielsig)
+O código completo dessa aplicação pode ser obtido [agui](gabrielsig.github.io/codes/regions.py)
 
 #### 1.2. Explicando o código
 
@@ -107,7 +107,7 @@ Já na segunda imagem, podemos ver o que acontece quando o usuário seleciona du
 
 Neste exercício foi proposto a implementação de um programa que carregue uma imagem e faça a troca dos quadrantes da mesma em diagonal. Porém, além dessa implementação, decidimos construir um programa que solicita do usuário em quantas partes ele quer dividir a imagem para realizar um embaralhamento aleatório e reconstruir uma nova imagem.
 
-O código completo da troca de regiões pode ser obtido [aqui]() e o do embaralhamento [aqui]()
+O código completo da troca de regiões pode ser obtido [aqui](gabrielsig.github.io/codes/trocaregioes.py) e o do embaralhamento [aqui](gabrielsig.github.io/codes/shuffle.py)
 
 #### 2.2. Explicando o código
 
@@ -189,7 +189,7 @@ Nesse programa foi implementado um algoritmo para realizar a contagem de objetos
 
 Inicialmente percebemos que a implementação proposta apresentava a limitação de não ser capaz de contar mais do que 255 objetos em uma imagem de 8 bits, pois o valor da contagem é usado para preencher cada objeto encontrado. Uma forma forma de contornar isso seria simplesmente usar um valor fixo para ser usado no preenchimento dos objetos encontrados pela função `cv2.floodFill()`, permitindo a contagem de mais de 255 objetos. Outra forma seria usar uma imagem em ponto flutuante, o que nos gera uma gama infinita de valores possíveis e, portanto, também eliminaria o problema.
 
-O código usado para a resolução desse problema pode ser encontrado [aqui]()
+O código usado para a resolução desse problema pode ser encontrado [aqui](gabrielsig.github.io/codes/labeling.py)
 
 #### 3.2. Explicando o código
 
@@ -368,7 +368,7 @@ Quando trabalhamos com fotos, foi possível desenvolver uma função para gerar 
 
 Além disso, os dois códigos possuem poucas diferenças, e estas serão discutidas mais a frente quando os os mesmos forem explicados.
 
-O algoritmo para imagens pode ser encontrado [aqui]() e para videos [aqui]().
+O algoritmo para imagens pode ser encontrado [aqui](gabrielsig.github.io/codes/histogram_image.py) e para videos [aqui](gabrielsig.github.io/codes/histogram_video.py).
 
 #### 4.2. Explicando o código
 
@@ -541,7 +541,7 @@ Esse programa tem como objetivo detectar movimentos em uma cena capturada pela w
 
 Existem vários métodos para comparar histogramas, optamos por usar o método chi-square por ter se mostrado mais estável nas condições de teste estabelecidas. Além disso, foram implementadas duas trackbars para que o usuário possa mudar dinamicamente o valor de threshold e a quantidade de frames que o programa deve esperar até mudar o histograma usado na comparação da cana.
 
-O código completo do detector de movimento pode ser encontrado [aqui]()
+O código completo do detector de movimento pode ser encontrado [aqui](gabrielsig.github.io/codes/motion_detector.py)
 
 #### 5.2. Explicando o código
 
@@ -660,7 +660,7 @@ Esse programa tem como objetivo a aplicação de filtros em vídeos capturados p
 
 Assim como no programa anterior, usaremos trackbars para garantir ao usuário mais controle sobre o programa: A primeira possibilita a escolha de um entre os 6 filtros diferentes; A segunda fornece a possibilidade de visualizar o resultado da filtragem de forma normalizada ou absoluta; E a última possibilita a escolha da intensidade do filtro, ou quantas vezes a máscara será convolucional com a imagem (mais útil para os filtros de borramento).
 
-O código completo do programa de filtragem espacial pode ser encontrado [aqui]()
+O código completo do programa de filtragem espacial pode ser encontrado [aqui](gabrielsig.github.io/codes/spatial_filter.py)
 
 #### 6.2. Explicando o código
 
@@ -838,7 +838,7 @@ Esse exercício tem como objetivo a aplicação de um efeito tilt shift em uma i
 
 Assim como nas questões anteriores, usaremos trackbars para fornecer um controle mais dinâmico ao usuário: a primeira é responsável por ajustar a linha de foco da imagem; a segunda para regular o tamanho da janela de foco; a terceira regula o decaimento do borramento; a quarta a intensidade desse borramento; e por último, a quinta nos dá a possibilidade de elevar a saturação da imagem.
 
-O código completo usado nesse exercício pode ser obtido [aqui]()
+O código completo usado nesse exercício pode ser obtido [aqui](gabrielsig.github.io/codes/tiltshift.py)
 
 #### 7.2. Explicando o código
 
@@ -979,7 +979,7 @@ def on_blur_change(slider_pos):
 
 #### 7.3. Resultados  
 
-Abaixo podemos ver a imagem original, seguida da máscara aplicada no tiltshift e a imagem após o processamento
+Abaixo podemos ver a imagem original, seguida da máscara aplicada no tiltshift e a imagem após o processamento.
 
 ![tiltshift1](gabrielsig.github.io/images/tiltshift/tiltshift1.jpg)
 
