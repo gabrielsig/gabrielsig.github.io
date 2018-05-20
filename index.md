@@ -994,7 +994,7 @@ Abaixo podemos ver a imagem original, seguida da máscara aplicada no tiltshift 
 
 
 # Unidade 2
-## 1. Filtro Homomorfico
+## 1. Filtro Homomórfico
 #### 1.1. Descrição
 
 Este programa tem como objetivo a aplicação de um filtro homomórfico na imagem. Esse filtro é aplicado no domínio da frequência e tem como objetivo realçar detalhes em uma cena com iluminação regular. Esse resultado é obtido realizando uma atenuação nas componentes de baixa frequência (geralmente relacionadas a componente de iluminação da cena) ao mesmo tempo que se aplica um ganho as componentes de alta frequência (geralmente relacionadas a componente de reflectância dos objetos da cena).
@@ -1024,6 +1024,9 @@ dft_n = cv2.getOptimalDFTSize(width)
 
 # copy the image with padding to another image
 padded_img = cv2.copyMakeBorder(img, 0, dft_m-height, 0, dft_n-width, cv2.BORDER_CONSTANT, value=0)
+
+# apply some blurring to reduce noise
+padded_img = cv2.blur(padded_img,(3,3))
 
 # create a coppy of the padded image as floating point
 float_img = np.float32(padded_img)
@@ -1150,3 +1153,37 @@ Aplicamos o filtro a uma cena escura e com iluminação irregular. Como podemos 
 ![mask](gabrielsig.github.io/images/homomorphic/mask.png)
 
 ![filtered](gabrielsig.github.io/images/homomorphic/filtered.png)
+
+
+
+
+
+## 2. Detector de bordas de Canny para efeito pontilhismo
+#### 2.1. Descrição
+
+Para esse exercício foi desenvolvido um algoritmo que aplica um efeito de pontilhismo a uma imagem. Esse efeito é gerado em duas etapas: selecionamos uma porção de pontos e desenhamos círculos aleatoriamente com raio variando entre dois limiares,  dessa forma obtemos uma versão pontilhista mas sem detalhes da imagem original. Posteriormente, aplicamos o detector de bordas de  Canny e usamos o seu output para desenhar círculos menores nas regiões de borda da imagem. Assim, obtemos um efeito pontilhista que preserva os detalhes da imagem original.
+
+O código completo dessa aplicação pode ser encontrado [aqui](gabrielsig.github.io/codes/pointillism_canny.py).
+
+#### 2.2. Explicando o código
+
+
+
+#### 2.3 Resultados
+
+
+
+
+
+
+
+
+
+## 3. Clusterização de cores com K Means
+#### 3.1. Descrição
+
+
+#### 3.2. Explicando o código
+
+
+#### 3.3 Resultados
