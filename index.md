@@ -1167,11 +1167,106 @@ O código completo dessa aplicação pode ser encontrado [aqui](gabrielsig.githu
 
 #### 2.2. Explicando o código
 
+Começamos inicializando as variáveis que irão controlar o comportamento do efeito, carregando a imagem e criando o vetor com os pontos que serão usados para a aplicação do efeito no background:
 
+```python
+# parameters that configure the behaviour of the pointillism
+step = 5
+jitter = 3
+min_bg_radius = 3
+max_bg_radius = 9
+min_detail_radius = 1
+max_detail_radius = 4
+
+img = cv2.imread('media/pipa.jpg')
+height, width = img.shape[:2]
+
+# create a list to the points that will be used to apply the effect
+# the number of points in each dimension is defined by the size of the image in that dimension divided by the step
+x_range = np.arange(0, int(height/step))
+y_range = np.arange(0, int(width/step))
+
+for i in range(len(x_range)):
+    x_range[i] = int(x_range[i] * step + step/2)
+for j in range(len(y_range)):
+    y_range[j] = int(y_range[j] * step + step/2)
+
+```
+
+Criamos uma imagem  em branco do tamanho da imagem original e percorremos os  vetores embaralhados, para que o efeito seja mais convincente. Para cada par de coordenadas  pintamos um ponto com um certo raio e deslocamento aleatório para os lados:
+
+```python
+points = np.full(img.shape, 255, dtype=np.uint8)
+
+# apply the pointillism effect on the image with big points to serve as the background
+np.random.shuffle(x_range)
+for i in x_range:
+    np.random.shuffle(y_range)
+    for j in y_range:
+        x = i + np.random.randint(-jitter, jitter+1)
+        y = j + np.random.randint(-jitter, jitter+1)
+        if x >= height:
+            x = height-1
+        if y >= width:
+            y = width-1
+        color = img[x, y].tolist()
+        point_radius = np.random.randint(min_bg_radius, max_bg_radius)
+        cv2.circle(points, (y, x), point_radius, color, -1, cv2.LINE_AA)
+
+cv2.imshow('Pointillism before canny', points)
+```
+
+Criamos um array de limiares inferiores (valores entre 50 e 300) para serem usados na detecção de borda  de canny e logo fazemos o embaralhamento desse array. Para cada um desses limiares criamos uma imagem com as bordas e percorremos os pontos fazendo novamente o processo de pintura levando em consideração somente esses pontos.
+
+```python
+# create an array for the lower thresholds to be used by the canny algorithm
+canny_min_thresh = np.arange(50, 301, 50)
+
+# shuffle the threshold array
+np.random.shuffle(canny_min_thresh)
+
+# create a blurred copy of the image
+blurred = cv2.blur(img, (5,5))
+
+full_x_range = np.arange(0, height)
+full_y_range = np.arange(0, width)
+
+
+for threshold in canny_min_thresh:
+    # create the image with the edges detected by the canny algorithm with the given thresholds
+    edges = cv2.Canny(blurred, threshold, threshold*2)
+    # shuffle the full_x_range so we go though the image randomly
+    np.random.shuffle(full_x_range)
+    for i in full_x_range:
+        # shuffle the full_y_range
+        np.random.shuffle(full_y_range)
+        for j in full_y_range:
+            if edges[i,j] == 255:
+                x = i + np.random.randint(-jitter, jitter+1)
+                y = j + np.random.randint(-jitter, jitter+1)
+                if x >= height:
+                    x = height-1
+                if y >= width:
+                    y = width-1
+                color = img[x, y].tolist()
+                point_radius = np.random.randint(min_detail_radius, max_detail_radius)
+                cv2.circle(points, (y, x), point_radius, color, -1, cv2.LINE_AA)
+
+cv2.imshow('Pointillism  after canny', points)
+cv2.imwrite('pointillism.jpg', points)
+cv2.waitKey()
+
+```
 
 #### 2.3 Resultados
 
+Abaixo podemos ver a imagem original e logo em seguida as imagens geradas pelo algoritmo, sendo a primeira delas o efeito antes da aplicação do detector de bordas de Canny e a segunda o resultado final. Podemos ver claramente o aumento de detalhes entre a segunda e terceira imagem, o que gera um efeito visualmente mais agradável e realista:
 
+![original](gabrielsig.github.io/images/canny/original.png)
+
+![before canny](gabrielsig.github.io/images/canny/before_canny.png)
+
+![after canny](gabrielsig.github.io/images/canny/after_canny.png)
 
 
 
