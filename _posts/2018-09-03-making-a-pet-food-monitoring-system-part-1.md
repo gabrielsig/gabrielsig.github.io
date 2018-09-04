@@ -29,6 +29,32 @@ We are going to be using a Raspberry pi 3  with a webcam to monitor the food lev
 
 <div class="box">
   <p>
-    <b>NOTE:</b> This is just a prototype project for now.  That being the case, we are not going to be spending much time with the deployment of the platform, so the server will only be accessible locally  i.e. only devices connected to the same network.
+    <b>NOTE:</b> This is just a prototype project for now.  That being the case, we are not going to be spending much time with the deployment of the platform, so the server will only be accessible locally  i.e. only devices connected to the same network will be able to make requests.
   </p>
 </div>
+
+## Installation process
+
+I will not be reinventing the wheel here, instead of presenting detailed explanation on how to install every dependency I will provide some guidance and links to useful tutorials that are way more well explained than I could ever make.
+
+__1. Installing Raspbian on the Raspberry Pi:__
+
+This is the first step that you will have to make, and it’s pretty simple. You will need a formatted micro SD card (8 gb or more) to install the Raspbian operating system to run on your Raspberry Pi.
+
+Raspbian is a Linux distribution especially made for the Raspberry Pi and they provide a very useful tool for installing it called NOOBS. The step by step guide for installing the OS though this tool can be found on the [Raspberry Pi website](https://projects.raspberrypi.org/en/projects/noobs-install).
+
+__2. Installing the Flask Micro-framework:__
+
+The Raspbian OS comes with Python pre-installed, so you won’t need to worry about that! The next step is to install the Flask framework. Lucky for us, it’s a pretty simple process, you only need to make one command on the terminal:
+
+```
+~$ pip install -U Flask
+```
+
+That’s it! For more information please visit the [project webpage](http://flask.pocoo.org/) where you can find example projects and a quick start tutorial.
+
+__3. Installing OpenCV:__
+
+Well, I'm not going to lie to you: installing OpenCV sucks! This is because of the multiple dependencies and per-requisites that have to be installed for the library to work correctly.
+
+That being the case, I highly recommend that you check out Adrian Rosebrock’s truly AWESOME tutorial on how to install the library on the latest version of Raspbian. The tutorial is available on his site, Pyimagesearch, on this [link](https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/).

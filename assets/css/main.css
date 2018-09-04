@@ -2474,9 +2474,10 @@
 			}
 
 		.image.main {
+    	margin: auto;
 			display: block;
-			margin: 4rem 0;
-			width: 100%;
+			/* margin: 4rem 0; */
+			width: 70%;
 		}
 
 			.image.main:first-child {

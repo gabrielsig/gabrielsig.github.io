@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-09-04T10:10:38-03:00</updated><id>/</id><title type="html">It’s not a bug…</title><subtitle></subtitle><entry><title type="html">Making a pet food monitoring system - Part 1</title><link href="/blog/making-a-pet-food-monitoring-system-part-1/" rel="alternate" type="text/html" title="Making a pet food monitoring system - Part 1" /><published>2018-09-03T00:00:00-03:00</published><updated>2018-09-03T00:00:00-03:00</updated><id>/blog/making-a-pet-food-monitoring-system-part-1</id><content type="html" xml:base="/blog/making-a-pet-food-monitoring-system-part-1/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-09-04T13:54:07-03:00</updated><id>/</id><title type="html">It’s not a bug…</title><subtitle></subtitle><entry><title type="html">Making a pet food monitoring system - Part 1</title><link href="/blog/making-a-pet-food-monitoring-system-part-1/" rel="alternate" type="text/html" title="Making a pet food monitoring system - Part 1" /><published>2018-09-03T00:00:00-03:00</published><updated>2018-09-03T00:00:00-03:00</updated><id>/blog/making-a-pet-food-monitoring-system-part-1</id><content type="html" xml:base="/blog/making-a-pet-food-monitoring-system-part-1/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
 
 &lt;p&gt;So, this guy on the photo above is  my family’s dog, Hermes. Yes, he is a funny weirdo! Like many other dogs, he sometimes struggles with his food. When he gets nervous for some random reason, he can go most of the day without touching his food.&lt;/p&gt;
 
@@ -23,6 +23,32 @@
 
 &lt;div class=&quot;box&quot;&gt;
   &lt;p&gt;
-    &lt;b&gt;NOTE:&lt;/b&gt; This is just a prototype project for now.  That being the case, we are not going to be spending much time with the deployment of the platform, so the server will only be accessible locally  i.e. only devices connected to the same network.
+    &lt;b&gt;NOTE:&lt;/b&gt; This is just a prototype project for now.  That being the case, we are not going to be spending much time with the deployment of the platform, so the server will only be accessible locally  i.e. only devices connected to the same network will be able to make requests.
   &lt;/p&gt;
-&lt;/div&gt;</content><summary type="html">In this tutotial series you will learn how to build a pet  food monitoring system using a Raspberry Pi, Flask REST API and OpenCV!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/hermes1.jpg" /></entry></feed>
+&lt;/div&gt;
+
+&lt;h2 id=&quot;installation-process&quot;&gt;Installation process&lt;/h2&gt;
+
+&lt;p&gt;I will not be reinventing the wheel here, instead of presenting detailed explanation on how to install every dependency I will provide some guidance and links to useful tutorials that are way more well explained than I could ever make.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1. Installing Raspbian on the Raspberry Pi:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the first step that you will have to make, and it’s pretty simple. You will need a formatted micro SD card (8 gb or more) to install the Raspbian operating system to run on your Raspberry Pi.&lt;/p&gt;
+
+&lt;p&gt;Raspbian is a Linux distribution especially made for the Raspberry Pi and they provide a very useful tool for installing it called NOOBS. The step by step guide for installing the OS though this tool can be found on the &lt;a href=&quot;https://projects.raspberrypi.org/en/projects/noobs-install&quot;&gt;Raspberry Pi website&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2. Installing the Flask Micro-framework:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The Raspbian OS comes with Python pre-installed, so you won’t need to worry about that! The next step is to install the Flask framework. Lucky for us, it’s a pretty simple process, you only need to make one command on the terminal:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~$ pip install -U Flask
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;That’s it! For more information please visit the &lt;a href=&quot;http://flask.pocoo.org/&quot;&gt;project webpage&lt;/a&gt; where you can find example projects and a quick start tutorial.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;3. Installing OpenCV:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Well, I’m not going to lie to you: installing OpenCV sucks! This is because of the multiple dependencies and per-requisites that have to be installed for the library to work correctly.&lt;/p&gt;
+
+&lt;p&gt;That being the case, I highly recommend that you check out Adrian Rosebrock’s truly AWESOME tutorial on how to install the library on the latest version of Raspbian. The tutorial is available on his site, Pyimagesearch, on this &lt;a href=&quot;https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/&quot;&gt;link&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">In this tutotial series you will learn how to build a pet  food monitoring system using a Raspberry Pi, Flask REST API and OpenCV!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/hermes1.jpg" /></entry></feed>
