@@ -67,10 +67,36 @@
       			<p></p>
 <h2 id="motivation">Motivation</h2>
 
-<p>to do</p>
+<p>So, this guy on the photo above is  my family’s dog, Hermes. Yes, he is a funny weirdo! Like many other dogs, he sometimes struggles with his food. When he gets nervous for some random reason, he can go most of the day without touching his food.</p>
 
-<h2 id="features">Features</h2>
-<p>to do</p>
+<p>In an effort to make it easier to check if he is not eating properly, I decided to develop a system to monitor his food bowl.</p>
+
+<p>Let’s get started!</p>
+
+<h2 id="what-you-are-going-to-need">What you are going to need</h2>
+
+<ul>
+  <li>
+<strong>Webcam:</strong> pretty much any model would do. I ’m going to be using the PS Eye because that’s what I have at hand</li>
+  <li>
+<strong>Raspberry Pi:</strong> preferably a model 3, so you can easily connect it to your wi-fi network</li>
+  <li>
+<strong>Flask:</strong> a python micro web framework that we are going to use to build the REST API, so we can access and control  the raspberry remotely</li>
+  <li>
+<strong>OpenCV</strong>: a popular computer vision library with python bindings</li>
+</ul>
+
+<p>That’s it for now. If we happen to need any other libraries or frameworks in future sections I will tell you in time.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>We are going to be using a Raspberry pi 3  with a webcam to monitor the food level in the bowl with some computer vision magic! We are also going to build a server on the Raspberry pi with the Flask framework. This way, we are going to be able to make calls o the REST API and get the information about the food level (And a bunch of other useful information!) remotely.</p>
+
+<div class="box">
+  <p>
+    <b>NOTE:</b> This is just a prototype project for now.  That being the case, we are not going to be spending much time with the deployment of the platform, so the server will only be accessible locally  i.e. only devices connected to the same network.
+  </p>
+</div>
 
       		</section>
 

@@ -1,6 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-09-03T22:14:39-03:00</updated><id>/</id><title type="html">It’s not a bug…</title><subtitle></subtitle><entry><title type="html">Making a pet food monitoring system - Part 1</title><link href="/blog/making-a-pet-food-monitoring-system-part-1/" rel="alternate" type="text/html" title="Making a pet food monitoring system - Part 1" /><published>2018-09-03T00:00:00-03:00</published><updated>2018-09-03T00:00:00-03:00</updated><id>/blog/making-a-pet-food-monitoring-system-part-1</id><content type="html" xml:base="/blog/making-a-pet-food-monitoring-system-part-1/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-09-04T10:10:38-03:00</updated><id>/</id><title type="html">It’s not a bug…</title><subtitle></subtitle><entry><title type="html">Making a pet food monitoring system - Part 1</title><link href="/blog/making-a-pet-food-monitoring-system-part-1/" rel="alternate" type="text/html" title="Making a pet food monitoring system - Part 1" /><published>2018-09-03T00:00:00-03:00</published><updated>2018-09-03T00:00:00-03:00</updated><id>/blog/making-a-pet-food-monitoring-system-part-1</id><content type="html" xml:base="/blog/making-a-pet-food-monitoring-system-part-1/">&lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
 
-&lt;p&gt;to do&lt;/p&gt;
+&lt;p&gt;So, this guy on the photo above is  my family’s dog, Hermes. Yes, he is a funny weirdo! Like many other dogs, he sometimes struggles with his food. When he gets nervous for some random reason, he can go most of the day without touching his food.&lt;/p&gt;
 
-&lt;h2 id=&quot;features&quot;&gt;Features&lt;/h2&gt;
-&lt;p&gt;to do&lt;/p&gt;</content><summary type="html">In this tutotial series you will learn how to build a pet  food monitoring system using a Raspberry Pi, Flask REST API and OpenCV!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/hermes1.jpg" /></entry></feed>
+&lt;p&gt;In an effort to make it easier to check if he is not eating properly, I decided to develop a system to monitor his food bowl.&lt;/p&gt;
+
+&lt;p&gt;Let’s get started!&lt;/p&gt;
+
+&lt;h2 id=&quot;what-you-are-going-to-need&quot;&gt;What you are going to need&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Webcam:&lt;/strong&gt; pretty much any model would do. I ’m going to be using the PS Eye because that’s what I have at hand&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Raspberry Pi:&lt;/strong&gt; preferably a model 3, so you can easily connect it to your wi-fi network&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Flask:&lt;/strong&gt; a python micro web framework that we are going to use to build the REST API, so we can access and control  the raspberry remotely&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;OpenCV&lt;/strong&gt;: a popular computer vision library with python bindings&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;That’s it for now. If we happen to need any other libraries or frameworks in future sections I will tell you in time.&lt;/p&gt;
+
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;/h2&gt;
+
+&lt;p&gt;We are going to be using a Raspberry pi 3  with a webcam to monitor the food level in the bowl with some computer vision magic! We are also going to build a server on the Raspberry pi with the Flask framework. This way, we are going to be able to make calls o the REST API and get the information about the food level (And a bunch of other useful information!) remotely.&lt;/p&gt;
+
+&lt;div class=&quot;box&quot;&gt;
+  &lt;p&gt;
+    &lt;b&gt;NOTE:&lt;/b&gt; This is just a prototype project for now.  That being the case, we are not going to be spending much time with the deployment of the platform, so the server will only be accessible locally  i.e. only devices connected to the same network.
+  &lt;/p&gt;
+&lt;/div&gt;</content><summary type="html">In this tutotial series you will learn how to build a pet  food monitoring system using a Raspberry Pi, Flask REST API and OpenCV!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/hermes1.jpg" /></entry></feed>
