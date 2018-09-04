@@ -67,7 +67,7 @@
       			<p></p>
 <h2 id="motivation">Motivation</h2>
 
-<p>So, this guy on the photo above is  my family’s dog, Hermes. Yes, he is a funny weirdo! Like many other dogs, he sometimes struggles with his food. When he gets nervous for some random reason, he can go most of the day without touching his food.</p>
+<p>So, this guy on the photo above is  my family’s dog, Hermes. Yes, he is a funny weirdo! Like many other dogs, he sometimes struggles with his food. When he gets nervous, for some random reason, he can go most of the day without touching his food.</p>
 
 <p>In an effort to make it easier to check if he is not eating properly, I decided to develop a system to monitor his food bowl.</p>
 
@@ -86,11 +86,11 @@
 <strong>OpenCV</strong>: a popular computer vision library with python bindings</li>
 </ul>
 
-<p>That’s it for now. If we happen to need any other libraries or frameworks in future sections I will tell you in time.</p>
+<p>That’s it for now. If we happen to need any other libraries or frameworks in future sections I will let you know.</p>
 
 <h2 id="overview">Overview</h2>
 
-<p>We are going to be using a Raspberry pi 3  with a webcam to monitor the food level in the bowl with some computer vision magic! We are also going to build a server on the Raspberry pi with the Flask framework. This way, we are going to be able to make calls o the REST API and get the information about the food level (And a bunch of other useful information!) remotely.</p>
+<p>We are going to be using a Raspberry pi 3  with a webcam to monitor the food level in the bowl with some computer vision magic! We are also going to build a server on the Raspberry pi with the Flask framework. This way, we are going to be able to make calls to the REST API and get the information about the food level (And a bunch of other useful information!) remotely.</p>
 
 <div class="box">
   <p>
@@ -100,17 +100,17 @@
 
 <h2 id="installation-process">Installation process</h2>
 
-<p>I will not be reinventing the wheel here, instead of presenting detailed explanation on how to install every dependency I will provide some guidance and links to useful tutorials that are way more well explained than I could ever make.</p>
+<p>I will not attempt to reinvent the wheel, instead of presenting detailed explanation on how to install every dependency, I will provide some guidance and links to useful tutorials that are way more well explained than I could ever make.</p>
 
 <p><strong>1. Installing Raspbian on the Raspberry Pi:</strong></p>
 
-<p>This is the first step that you will have to make, and it’s pretty simple. You will need a formatted micro SD card (8 gb or more) to install the Raspbian operating system to run on your Raspberry Pi.</p>
+<p>This is the first step that you will have to make, and it’s pretty simple. You will need a formatted micro SD card (8 gb or more) to install the Raspbian operating system.</p>
 
 <p>Raspbian is a Linux distribution especially made for the Raspberry Pi and they provide a very useful tool for installing it called NOOBS. The step by step guide for installing the OS though this tool can be found on the <a href="https://projects.raspberrypi.org/en/projects/noobs-install">Raspberry Pi website</a>.</p>
 
 <p><strong>2. Installing the Flask Micro-framework:</strong></p>
 
-<p>The Raspbian OS comes with Python pre-installed, so you won’t need to worry about that! The next step is to install the Flask framework. Lucky for us, it’s a pretty simple process, you only need to make one command on the terminal:</p>
+<p>The Raspbian OS comes with Python pre-installed, so you won’t need to worry about that! The next step is to install the Flask framework. Luckly for us, it’s a pretty simple process, you only need to make one command on the terminal:</p>
 
 <div class="highlighter-rouge">
 <pre class="highlight"><code>~$ pip install -U Flask
@@ -121,9 +121,13 @@
 
 <p><strong>3. Installing OpenCV:</strong></p>
 
-<p>Well, I’m not going to lie to you: installing OpenCV sucks! This is because of the multiple dependencies and per-requisites that have to be installed for the library to work correctly.</p>
+<p>Well, I’m not going to lie to you: installing OpenCV sucks! This is because of the multiple dependencies and pre requisites that have to be installed for the library to work correctly.</p>
 
 <p>That being the case, I highly recommend that you check out Adrian Rosebrock’s truly AWESOME tutorial on how to install the library on the latest version of Raspbian. The tutorial is available on his site, Pyimagesearch, on this <a href="https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/">link</a>.</p>
+
+<h2 id="next-steps">Next steps</h2>
+
+<p>In the next part of this tutorial we will learn how to make a boilerplate Flask application and start our REST API. After that we will develop the python script to detect the food on the bowl using OpenCV and integrate it on our API.</p>
 
       		</section>
 
